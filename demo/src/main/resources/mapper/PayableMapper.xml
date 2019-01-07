@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shls.dao.PayableDao" >
+  <resultMap id="BaseResultMap" type="com.shls.po.Payable" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
+    <result column="supplier_account" property="supplierAccount" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="whereSql" >
+    <where>
+      <if test="id != null" >
+        and id = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="supplierName != null and name != ''" >
+        and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierAccount != null" >
+        and supplier_account = #{supplierAccount,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="isDeleted != null" >
+        and is_deleted = #{isDeleted,jdbcType=INTEGER}
+      </if>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, supplier_name, supplier_account, created_at, updated_at, is_deleted, status
+  </sql>
+
+  <select id="list" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from payable
+    <include refid="whereSql"/>
+    ORDER BY id
+    limit #{offset}, #{limit}
+  </select>
+
+  <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from payable
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Long" >
+    update payable
+    set is_deleted=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.shls.po.Payable" >
+    insert into payable (id, supplier_name, supplier_account,
+      created_at, updated_at,
+      is_deleted, status)
+    values (#{id,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAccount,jdbcType=VARCHAR},
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
+      #{isDeleted,jdbcType=TINYINT}, #{status,jdbcType=INTEGER})
+  </insert>
+
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+    select count(*)
+    from payable
+    <include refid="whereSql"/>
+    ORDER BY id
+  </select>
+
+  <update id="update" parameterType="com.shls.po.Payable" >
+    update payable
+    <set >
+      <if test="supplierName != null" >
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAccount != null" >
+        supplier_account = #{supplierAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
