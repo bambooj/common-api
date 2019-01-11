@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.shls.dao.PayableDao" >
-  <resultMap id="BaseResultMap" type="com.shls.po.Payable" >
+<mapper namespace="org.jogen.demo.dao.PayableDao" >
+  <resultMap id="BaseResultMap" type="org.jogen.demo.po.Payable" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
     <result column="supplier_account" property="supplierAccount" jdbcType="VARCHAR" />
@@ -55,13 +55,23 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.shls.po.Payable" >
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="org.jogen.demo.po.Payable" >
     insert into payable (id, supplier_name, supplier_account,
       created_at, updated_at,
       is_deleted, status)
     values (#{id,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAccount,jdbcType=VARCHAR},
       #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
       #{isDeleted,jdbcType=TINYINT}, #{status,jdbcType=INTEGER})
+  </insert>
+
+  <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.List" >
+    insert into payable (supplier_name, supplier_account,created_at, updated_at,is_deleted, status)
+    values
+    <foreach collection="list" separator="," item="iterm">
+      (#{iterm.supplierName,jdbcType=VARCHAR}, #{iterm.supplierAccount,jdbcType=VARCHAR},
+      #{iterm.createdAt,jdbcType=TIMESTAMP}, #{iterm.updatedAt,jdbcType=TIMESTAMP},
+      #{iterm.isDeleted,jdbcType=TINYINT}, #{iterm.status,jdbcType=INTEGER})
+    </foreach>
   </insert>
 
   <select id="count" parameterType="map" resultType="java.lang.Long">
@@ -71,7 +81,7 @@
     ORDER BY id
   </select>
 
-  <update id="update" parameterType="com.shls.po.Payable" >
+  <update id="update" parameterType="org.jogen.demo.po.Payable" >
     update payable
     <set >
       <if test="supplierName != null" >
