@@ -1,6 +1,6 @@
 package org.jogen.demo.other;
 /**
- * -Xms20m -Xmx20m
+ * VM args: -Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError
  * @author J
  */
 public class OOMTest extends Thread{

@@ -43,4 +43,11 @@ public class TestController {
         System.out.println(JSON.toJSONString(result, true));
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("destroy")
+    public ResponseEntity<?> destroy(@RequestParam String id){
+        System.out.println(id);
+        return ResponseEntity.ok(id);
+    }
+
 }
